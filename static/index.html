@@ -1,14 +1,59 @@
-<script src="https://code.highcharts.com/maps/highmaps.js"></script>
-<script src="https://code.highcharts.com/maps/modules/data.js"></script>
-<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
-<script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
-<script src="index.js"></script>
+<html>
+  <head>
+    <style>
+      
+        #chart {
+      max-width: 650px;
+      margin: 35px auto;
+    }
+      
+    </style>
 
+    <script>
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
+        )
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
+        )
+      window.Promise ||
+        document.write(
+          '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
+        )
+    </script>
 
-<div id="container">
-    <div class="loading">
+    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
+
+    <script>
+      // Replace Math.random() with a pseudo-random number generator to get reproducible results in e2e tests
+      // Based on https://gist.github.com/blixt/f17b47c62508be59987b
+      var _seed = 42;
+      Math.random = function() {
+        _seed = _seed * 16807 % 2147483647;
+        return (_seed - 1) / 2147483646;
+      };
+    </script>
+  </head>
+  <body>
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="highmaps.js"></script>
+    <script src="data.js"></script>
+    <script src="exporting.js"></script>
+    <script src="offline-exporting.js"></script>
+    <script src="accessibility.js"></script>
+    <script src="index.js"></script>
+
+    <div id="container">
+      <div class="loading">
         <i class="icon-spinner icon-spin icon-large"></i>
         Loading data from Google Spreadsheets...
+      </div>
     </div>
-</div>
+
+    <div id="chart"></div>
+  </body>
+</html>

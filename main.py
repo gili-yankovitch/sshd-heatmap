@@ -19,7 +19,7 @@ def serve(path = "index.html"):
 
 @app.route("/update")
 def update():
-	with open("auth.log", "r") as f:
+	with open("/var/log/auth.log", "r") as f:
 		lines = f.read().split("\n")
 
 	pattern = compile("(?P<MONTH>\w{3})\s(?P<DAY>\d{2})\s(?P<TIME>\d\d:\d\d:\d\d)\s(?P<HOSTNAME>[^\s]+)\ssshd\[\d+\]:\sInvalid user (?P<USERNAME>[^\s]+)\sfrom\s(?P<IP>\d+\.\d+\.\d+\.\d+)")
@@ -37,7 +37,8 @@ def update():
 		if res is None:
 			continue
 
-		if datetime.now().day - 1 != int(res.group("DAY")) or month_abbr[datetime.now().month] != res.group("MONTH"):
+		if (datetime.now().day - 1 != int(res.group("DAY")) and datetime.now().day != int(res.group("DAY"))) \
+			or month_abbr[datetime.now().month] != res.group("MONTH"):
 			continue
 
 		location = reader.get(res.group("IP"))["country"]
@@ -59,7 +60,19 @@ def update():
 
 		stats["users"][res.group("USERNAME")] += 1
 
-	resp = {"locations": list([ stats["locations"][x] for x in stats["locations"] ]), "users": stats["users"]}
+	sorted_users = list(filter(lambda user: user["count"] > 3,
+		sorted(list([ { "name": x, "count": stats["users"][x] } for x in stats["users"] ]), key = lambda user: user["count"] )))
+
+	resp = {
+		"locations":
+			list([ stats["locations"][x] for x in stats["locations"] ]),
+		"users": {
+			"xaxis":
+				list([ user["name"] for user in sorted_users ])[::-1],
+			"yaxis":
+				list([ user["count"] for user in sorted_users ])[::-1]
+			}
+		}
 	return resp
 
 if __name__ == '__main__':

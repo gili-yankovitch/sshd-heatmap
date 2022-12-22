@@ -108,13 +108,42 @@
         });
     }
 
-    $.get("/update", (data, status) => {
-        drawChart(data["locations"]);
-    });
-
-    setInterval(() => {
+    function refreshData()
+    {
         $.get("/update", (data, status) => {
             drawChart(data["locations"]);
+
+          var options = {
+            series: [{
+            data: data["users"]["yaxis"]
+          }],
+            chart: {
+            type: 'bar',
+            height: 1000
+          },
+          plotOptions: {
+            bar: {
+              borderRadius: 4,
+              horizontal: true,
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          xaxis: {
+            categories: data["users"]["xaxis"]
+          }
+          };
+
+          var chart = new ApexCharts(document.querySelector("#chart"), options);
+          chart.render();
+
         });
+    }
+
+    refreshData();
+
+    setInterval(() => {
+        refreshData();
     }, 60000);
 })();
