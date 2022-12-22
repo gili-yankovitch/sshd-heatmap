@@ -8,6 +8,7 @@
         return Highcharts.mapChart('container', {
             chart: {
                 map: topology,
+                height: 900,
                 borderWidth: 1
             },
 
@@ -71,24 +72,21 @@
 
             colorAxis: {
                 dataClasses: [{
-                    to: 3
+                    to: 1
                 }, {
-                    from: 3,
-                    to: 10
+                    from: 1,
+                    to: 50
                 }, {
-                    from: 10,
-                    to: 30
-                }, {
-                    from: 30,
+                    from: 50,
                     to: 100
                 }, {
                     from: 100,
-                    to: 300
+                    to: 250
                 }, {
-                    from: 300,
-                    to: 1000
+                    from: 250,
+                    to: 500
                 }, {
-                    from: 1000
+                    from: 500,
                 }]
             },
 
@@ -110,11 +108,13 @@
         });
     }
 
-    drawChart([
-            {
-                code: "IL",
-                value: 1337,
-                name: "Israel"
-            }
-        ])
+    $.get("/update", (data, status) => {
+        drawChart(data["locations"]);
+    });
+
+    setInterval(() => {
+        $.get("/update", (data, status) => {
+            drawChart(data["locations"]);
+        });
+    }, 60000);
 })();
